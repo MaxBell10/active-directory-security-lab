@@ -12,6 +12,20 @@ This lab demonstrates end-to-end implementation of a Windows Active Directory en
 
 ---
 
+## 🎯 Project Objective
+
+This lab simulates real-world enterprise security challenges faced daily by SOC analysts, security engineers, and GRC professionals:
+
+- Protecting Active Directory from credential-based attacks
+- Enforcing least privilege access control across users and groups
+- Hardening a Windows environment through Group Policy
+- Detecting brute-force attempts and identity threats in real time via SIEM
+- Mapping detected events to MITRE ATT&CK techniques
+
+It reflects the intersection of technical implementation and security governance — directly aligned with internal GRC + Technical roles in Belgium.
+
+---
+
 ## 🏗️ Architecture
 
 ```
@@ -67,6 +81,8 @@ lab.local
 
 This structure reflects the **principle of least privilege** — users are assigned to groups with the minimum permissions required for their role.
 
+![AD Structure](screenshots/WS01-aduc-arborescence.png)
+
 ---
 
 ## 🔒 Security Controls Implemented
@@ -106,11 +122,15 @@ Wazuh is deployed as an all-in-one OVA on the same internal network. Both agents
 | 001 | WIN-6PF6FQBBP9F | 192.168.100.1 | ✅ Active | v4.14.4 |
 | 002 | DESKTOP-DB2B9Q5 | 192.168.100.2 | ✅ Active | v4.14.4 |
 
+![Wazuh Dashboard](screenshots/WS10-wazuh-dashboard-overview.png)
+
 ### Events Monitored
 - **Event ID 4625** — Failed logon attempts (Logon Failure — Unknown user or bad password)
 - **Event ID 4740** — Account lockout
 - **Event ID 4728** — User added to privileged group (Domain Admins)
 - **Rule 60204** — Multiple Windows Logon Failures (correlated brute-force detection, level 10)
+
+![Event ID 4625](screenshots/WS14-wazuh-events-4625-filtered.png)
 
 ### MITRE ATT&CK Coverage Detected
 | Technique | ID | Description |
@@ -122,6 +142,35 @@ Wazuh is deployed as an all-in-one OVA on the same internal network. Both agents
 | Domain Policy Modification | T1484 | GPO change detection |
 | Defense Evasion | TA0005 | Tactic-level detection |
 | Privilege Escalation | TA0004 | Tactic-level detection |
+
+![MITRE ATT&CK](screenshots/WS12-wazuh-threat-hunting-dashboard.png)
+
+---
+
+## ⚔️ Attack Simulation
+
+To validate detection capabilities, the following scenarios were deliberately simulated against the lab environment.
+
+**Brute-force via SMB authentication**
+
+The Windows lock screen does not generate a real Event ID 4625 — it handles authentication locally without hitting the Domain Controller. To trigger genuine network authentication failures visible in Wazuh, SMB requests were forced directly against the DC:
+
+```cmd
+net use \\192.168.100.1\sysvol /user:lab\bob.finance WrongPass999
+```
+
+**Attack timeline:**
+
+| Step | Event | Detection |
+|---|---|---|
+| 1 | Attacker sends SMB auth request to DC | — |
+| 2 | Wrong credentials → DC logs failure | Event ID 4625 |
+| 3 | Repeated attempts cross threshold | Event ID 4625 × N |
+| 4 | Account locked out | Event ID 4740 |
+| 5 | Wazuh correlates pattern → alert | Rule 60204 (level 10) |
+| 6 | MITRE ATT&CK mapped automatically | T1110, T1110.001, T1078 |
+
+**Key insight:** Understanding the difference between local and network authentication is critical for accurate SIEM tuning — a misconfigured audit policy or misunderstanding of authentication flows creates blind spots in detection.
 
 ---
 
@@ -159,12 +208,14 @@ All screenshots are located in the `/screenshots` directory.
 | SIEM deployment & configuration | Wazuh all-in-one, agent enrollment, rule tuning |
 | Threat detection | Real-time 4625 alerts, brute-force correlation (rule 60204) |
 | MITRE ATT&CK mapping | T1078, T1110, T1484, T1531 detected and mapped |
+| Log analysis & authentication flows | Understanding local vs network authentication |
+| Technical documentation | English-language README, lessons learned, regulatory mapping |
 
 ---
 
 ## 📚 Lessons Learned
 
-See [`lessons-learned.md`](./lessons-learned.md) for a detailed account of challenges encountered and production differences.
+See [`lessons_learned.md`](./lessons_learned.md) for a detailed account of challenges encountered and production differences.
 
 Key takeaways:
 - Wazuh OVA requires manual static IP assignment when no DHCP is present on the internal network (`ip addr add` — persistent config via `/etc/network/interfaces` or `nmcli` depending on the distro)
@@ -192,6 +243,22 @@ Key takeaways:
 - **Wazuh 4.14.4 OVA** — Open source SIEM / XDR
 - **Active Directory Users and Computers (ADUC)** — AD management
 - **Group Policy Management Console (GPMC)** — GPO configuration
+
+---
+
+## 🗺️ Homelab Roadmap
+
+This lab is part of a structured portfolio series demonstrating progressive cybersecurity skills across multiple domains:
+
+| Area | Topic | Status |
+|---|---|---|
+| Identity & Access | Active Directory, GPO hardening, Wazuh SIEM | ✅ Complete |
+| Network Security | pfSense, firewall rules, Suricata IDS/IPS | 🔄 In progress |
+| GRC & Risk | EBIOS RM audit report, NIS2, IEC 62443 | 📋 Planned |
+| Automation | Bash & PowerShell security scripts | 📋 Planned |
+| Attack & Defense | Integrated AD + pfSense attack simulation | 📋 Planned |
+| Networking | Cisco Packet Tracer, network design | 📋 Planned |
+| Linux | Linux administration & hardening | 📋 Planned |
 
 ---
 
