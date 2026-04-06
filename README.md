@@ -20,10 +20,10 @@ This lab demonstrates end-to-end implementation of a Windows Active Directory en
 │              Internal Network: intnet               │
 │                                                     │
 │  ┌──────────────────┐    ┌──────────────────┐       │
-│  │ Windows Server   │    │  Windows 10 Pro  │       │
-│  │ 2022 — DC        │    │  Client          │       │
-│  │ 192.168.100.1    │    │  192.168.100.2   │       │
-│  │ lab.local        │    │  joined: lab.local│       │
+│  │ Windows Server   │    │ Windows 10 Pro   │       │
+│  │ 2022 - DC        │    │ Client           │       │
+│  │ 192.168.100.1    │    │ 192.168.100.2    │       │
+│  │ lab.local        │    │ joined: lab.local│       │
 │  └────────┬─────────┘    └────────┬─────────┘       │
 │           │                       │                 │
 │           └──────────┬────────────┘                 │
@@ -131,15 +131,15 @@ All screenshots are located in the `/screenshots` directory.
 
 | File | Content |
 |---|---|
-| WS1-aduc-arborescence.png | ADUC — full OU tree |
-| WS2-ou-groups.png | OU_Groups with GRP_Admins and GRP_ReadOnly |
-| WS3-grp-admins-membres.png | GRP_Admins members (Alice) |
-| WS4-grp-readonly-membres.png | GRP_ReadOnly members (Bob, Carol) |
-| WS5-console-gpo.png | GPO console — Password Policy linked to lab.local |
-| WS6-gpo-password-policy.png | GPO editor — password settings (12 chars, complexity) |
-| WS7-gpo-account-lockout.png | GPO editor — account lockout (5 attempts, 30 min) |
-| WS8-wazuh-ip-config.png | Wazuh VM — static IP configuration |
-| WS9-wazuh-login.png | Wazuh login page (192.168.100.10) |
+| WS01-aduc-arborescence.png | ADUC — full OU tree |
+| WS02-ou-groups.png | OU_Groups with GRP_Admins and GRP_ReadOnly |
+| WS03-grp-admins-membres.png | GRP_Admins members (Alice) |
+| WS04-grp-readonly-membres.png | GRP_ReadOnly members (Bob, Carol) |
+| WS05-console-gpo.png | GPO console — Password Policy linked to lab.local |
+| WS06-gpo-password-policy.png | GPO editor — password settings (12 chars, complexity) |
+| WS07-gpo-account-lockout.png | GPO editor — account lockout (5 attempts, 30 min) |
+| WS08-wazuh-ip-config.png | Wazuh VM — static IP configuration |
+| WS09-wazuh-login.png | Wazuh login page (192.168.100.10) |
 | WS10-wazuh-dashboard-overview.png | Wazuh overview — 2 active agents, 1,334+ alerts |
 | WS11-wazuh-agents-active.png | Wazuh agents list — both agents active |
 | WS12-wazuh-threat-hunting-dashboard.png | Threat Hunting — 18 auth failures, MITRE ATT&CK mapped |
