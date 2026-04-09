@@ -228,8 +228,8 @@ Key takeaways:
 
 | Framework | Control |
 |---|---|
-| ISO 27001 | A.9 Access Control, A.9.4 System and application access control |
-| ISO 27001 | A.12.4 Logging and monitoring |
+| ISO 27001:2022 | A.8 Technological controls — A.8.3 Information access restriction |
+| ISO 27001:2022 | A.8.15 Logging |
 | NIS2 Art. 21 | Technical security measures — authentication, access control, monitoring |
 | CIS Controls | Control 5 — Account Management, Control 8 — Audit Log Management |
 
